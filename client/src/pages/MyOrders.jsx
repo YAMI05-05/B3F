@@ -1,18 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import { useAppContext } from '../Context/AppContext';
-import { dummyOrders } from '../assets/assets';
+import { useAppContext } from '../Context/AppContext.jsx'; // ✅ fixed path
+import axios from 'axios';
 
 const MyOrders = () => {
   const [myOrders, setMyOrders] = useState([]);
-  const { currency } = useAppContext();
+  const { currency, user } = useAppContext();
 
   const fetchMyOrders = async () => {
-    setMyOrders(dummyOrders); // Replace with actual API call when available
+    if (!user) return;
+    try {
+      const token = localStorage.getItem('token');
+      const res = await axios.get(
+        `http://localhost:4000/api/orders/user/${user.id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setMyOrders(res.data);
+    } catch (err) {
+      console.error('Failed to fetch orders:', err);
+      setMyOrders([]);
+    }
   };
 
   useEffect(() => {
     fetchMyOrders();
-  }, []);
+  }, [user]);
 
   return (
     <div className="mt-16 pb-16 px-4">
@@ -25,14 +38,20 @@ const MyOrders = () => {
         <p className="text-center text-gray-500">No orders found.</p>
       ) : (
         myOrders.map((order, index) => (
-          <div key={index} className="border border-gray-300 rounded-lg mb-10 p-4 py-5 max-w-4xl">
+          <div
+            key={index}
+            className="border border-gray-300 rounded-lg mb-10 p-4 py-5 max-w-4xl"
+          >
             <p className="flex justify-between flex-wrap md:items-center text-gray-400 md:font-medium gap-2">
-              <span>Order ID: {order._id}</span>
-              <span>Payment: {order.paymentType}</span>
-              <span>Total: {currency} {order.amount}</span>
+              <span>Order ID: {order._id || order.id}</span>
+              <span>Payment: {order.paymentType || 'COD'}</span>
+              <span>
+                Total: {currency}
+                {order.amount?.toFixed(2) || '0.00'}
+              </span>
             </p>
 
-            {order.items.map((item, idx) => (
+            {order.items?.map((item, idx) => (
               <div
                 key={idx}
                 className={`relative bg-white text-gray-500/70 ${
@@ -41,22 +60,36 @@ const MyOrders = () => {
               >
                 <div className="flex items-center">
                   <div className="bg-primary/10 p-4 rounded-lg">
-                    <img src={item.product.image[0]} alt={item.product.name} className="w-16 h-16 object-cover" />
+                    <img
+                      src={item.product?.image?.[0] || '/fallback.jpg'}
+                      alt={item.product?.name}
+                      className="w-16 h-16 object-cover"
+                    />
                   </div>
                   <div className="ml-4">
-                    <h2 className="text-xl font-medium text-gray-800">{item.product.name}</h2>
-                    <p>Category: {item.product.category}</p>
+                    <h2 className="text-xl font-medium text-gray-800">
+                      {item.product?.name}
+                    </h2>
+                    <p>Category: {item.product?.category}</p>
                   </div>
                 </div>
 
                 <div className="flex flex-col justify-center md:ml-8">
-                  <p>Quantity: {item.quantity || '1'}</p>
-                  <p>Status: {order.status}</p>
-                  <p>Date: {new Date(order.createdAt).toLocaleDateString()}</p>
+                  <p>Quantity: {item.quantity || 1}</p>
+                  <p>Status: {order.status || 'Pending'}</p>
+                  <p>
+                    Date:{' '}
+                    {order.createdAt
+                      ? new Date(order.createdAt).toLocaleDateString()
+                      : 'N/A'}
+                  </p>
                 </div>
 
                 <p className="text-primary text-lg font-semibold">
-                  Amount: {currency}{item.product.offerPrice * item.quantity}
+                  Amount: {currency}
+                  {(
+                    (item.product?.offerPrice || 0) * (item.quantity || 1)
+                  ).toFixed(2)}
                 </p>
               </div>
             ))}

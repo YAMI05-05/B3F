@@ -1,14 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { useAppContext } from '../../Context/AppContext';
-import { assets, dummyOrders } from '../../assets/assets';
+import { assets } from '../../assets/assets';
+import axios from 'axios';
 
 const Order = () => {
   const { currency } = useAppContext();
   const [orders, setOrders] = useState([]);
 
-  // Fetch dummy orders (replace with actual API later)
+  // Fetch orders from backend
   const fetchOrders = async () => {
-    setOrders(dummyOrders);
+  try {
+      const token = localStorage.getItem('token');
+      const res = await axios.get('http://localhost:4000/api/orders', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setOrders(res.data);
+    } catch (err) {
+      console.error('Failed to fetch orders', err);
+      setOrders([]);
+    }
   };
 
   useEffect(() => {

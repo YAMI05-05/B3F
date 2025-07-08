@@ -45,7 +45,25 @@ export const AppContextProvider = ({ children }) => {
   const fetchProducts = async () => {
     try {
       const response = await axios.get("http://localhost:4000/api/products");
-      setProducts(response.data);
+      const mapped = response.data.map((p) => ({
+        ...p,
+        _id: p.id?.toString() || p._id,
+        image: (() => {
+          if (p.images) {
+            try {
+              return JSON.parse(p.images);
+            } catch {
+              return [];
+            }
+          }
+          return p.image ? [p.image] : [];
+        })(),
+        description: Array.isArray(p.description)
+          ? p.description
+          : [p.description],
+        inStock: p.inStock ?? true,
+      }));
+      setProducts(mapped);
     } catch (err) {
       console.error("Failed to fetch products:", err);
       toast.error("Could not load products");
