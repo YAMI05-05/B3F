@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useAppContext } from '../Context/AppContext.jsx'; // ✅ fixed path
+import { useAppContext } from "../context/AppContext.jsx"; // ✅ fixed path
 import axios from 'axios';
 
 const MyOrders = () => {

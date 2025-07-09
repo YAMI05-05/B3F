@@ -18,7 +18,7 @@ router.post(
   '/',
   verifyToken,
   allowRoles('seller', 'admin'),
-  upload.array('images', 4), // ✅ Corrected field name
+  upload.array('images', 4), // 
   createProduct
 );
 
@@ -27,7 +27,7 @@ router.put(
   '/:id',
   verifyToken,
   allowRoles('seller', 'admin'),
-  upload.array('images', 4), // ✅ Corrected field name
+  upload.array('images', 4), // 
   updateProduct
 );
 
