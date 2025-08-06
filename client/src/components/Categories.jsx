@@ -1,13 +1,13 @@
 import React from 'react';
 import { categories } from '../assets/assets';
-import { useAppContext } from '../Context/AppContext';
+import { useAppContext } from '../context/AppContext';
 
 const Categories = () => {
   const { navigate } = useAppContext();
 
   return (
     <div className="mt-16">
-      <p className="text-2xl md:text-3xl font-medium">Categories</p>
+      <p className="text-2xl md:text-3xl font-medium text-gray-900 dark:text-gray-100">Categories</p>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 mt-6 gap-6">
         {categories.map((category) => (
@@ -25,7 +25,7 @@ const Categories = () => {
               alt={category.text}
               className="group-hover:scale-105 transition max-w-28"
             />
-            <p className="text-sm font-medium">{category.text}</p>
+            <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{category.text}</p>
           </div>
         ))}
       </div>

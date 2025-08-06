@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "start": "node server.js",
-    "server": "nodemon server.js"
+    "server": "nodemon server.js",
+    "test": "jest --detectOpenHandles"
   },
   "keywords": [],
   "author": "",
@@ -23,10 +24,13 @@
     "multer": "^2.0.1",
     "mysql": "^2.18.1",
     "mysql2": "^3.14.1",
+    "nodemailer": "^7.0.5",
     "sequelize": "^6.37.7",
     "stripe": "^18.3.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "jest": "^30.0.5",
+    "nodemon": "^3.1.10",
+    "supertest": "^7.1.4"
   }
 }

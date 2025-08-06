@@ -1,9 +1,10 @@
-import { Link, NavLink, Outlet } from "react-router-dom";
+import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { assets } from "../../assets/assets";
-import { useAppContext } from "../../Context/AppContext";
+import { useAppContext } from "../../context/AppContext.jsx";
 
 const SellerLayout = () => {
-  const { setIsSeller } = useAppContext();
+  const { setUser, setIsSeller } = useAppContext();
+  const navigate = useNavigate();
 
   const sidebarLinks = [
     { name: "Add Product", path: "/seller", icon: assets.add_icon },
@@ -12,7 +13,11 @@ const SellerLayout = () => {
   ];
 
   const logout = () => {
+    setUser(null);
     setIsSeller(false);
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    navigate('/');
   };
 
   return (

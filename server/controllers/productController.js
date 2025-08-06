@@ -1,9 +1,10 @@
 import db from '../db/database.js';
+import { QueryTypes } from 'sequelize';
 
 // ✅ GET all products with normalization for frontend
 export const getAllProducts = async (req, res) => {
   try {
-    const [rows] = await db.query("SELECT * FROM products");
+    const rows = await db.query("SELECT * FROM products", { type: db.QueryTypes.SELECT });
 
     const mapped = rows.map((p) => ({
       ...p,
@@ -47,16 +48,19 @@ export const createProduct = async (req, res) => {
     await db.query(
       `INSERT INTO products (name, description, category, price, offerPrice, seller_id, images, inStock)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-      [
-        name,
-        description,
-        category,
-        price,
-        offerPrice || null,
-        seller_id,
-        JSON.stringify(imagePaths),
-        inStock,
-      ]
+      {
+        replacements: [
+          name,
+          description,
+          category,
+          price,
+          offerPrice || null,
+          seller_id,
+          JSON.stringify(imagePaths),
+          inStock,
+        ],
+        type: db.QueryTypes.INSERT
+      }
     );
 
     res.json({ success: true, message: 'Product created successfully' });
@@ -71,7 +75,10 @@ export const deleteProduct = async (req, res) => {
   const { id } = req.params;
 
   try {
-    await db.query('DELETE FROM products WHERE id = ?', [id]);
+    await db.query('DELETE FROM products WHERE id = ?', {
+      replacements: [id],
+      type: db.QueryTypes.DELETE
+    });
     res.json({ message: 'Product deleted successfully' });
   } catch (err) {
     console.error("Error deleting product:", err);
@@ -111,7 +118,10 @@ export const updateProduct = async (req, res) => {
 
     values.push(id);
     const sql = `UPDATE products SET ${fields.join(', ')} WHERE id = ?`;
-    await db.query(sql, values);
+    await db.query(sql, {
+      replacements: values,
+      type: db.QueryTypes.UPDATE
+    });
 
     res.json({ message: 'Product updated successfully' });
   } catch (err) {

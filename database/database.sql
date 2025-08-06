@@ -43,13 +43,32 @@ CREATE TABLE cart (
 
 select * from cart;
 
+-- Create addresses table BEFORE orders table
+CREATE TABLE addresses (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT,
+  firstName VARCHAR(100),
+  lastName VARCHAR(100),
+  email VARCHAR(100),
+  street VARCHAR(255),
+  city VARCHAR(100),
+  state VARCHAR(100),
+  zipcode VARCHAR(20),
+  country VARCHAR(100),
+  phone VARCHAR(20),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
 
+-- Now create orders table with address_id foreign key
 CREATE TABLE orders (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT,
+  address_id INT,
   status VARCHAR(50) DEFAULT 'pending',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (user_id) REFERENCES users(id)
+  FOREIGN KEY (user_id) REFERENCES users(id),
+  FOREIGN KEY (address_id) REFERENCES addresses(id)
 );
 
 CREATE TABLE order_items (
@@ -63,13 +82,9 @@ CREATE TABLE order_items (
 
 select * from orders;
 select * from order_items;
+select * from addresses;
 
 
 
-ALTER TABLE products ADD COLUMN seller_id INT;
 
-DESC products;
 
-ALTER TABLE products
-ADD COLUMN createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-ADD COLUMN updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;

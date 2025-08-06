@@ -1,6 +1,6 @@
 import React from "react";
 import { assets } from "../assets/assets";
-import { useAppContext } from "../Context/AppContext";
+import { useAppContext } from "../context/AppContext.jsx";
 
 const ProductCard = ({ product }) => {
   const {
@@ -27,7 +27,11 @@ const ProductCard = ({ product }) => {
         <div className="group flex items-center justify-center px-2">
           <img
             className="group-hover:scale-105 transition max-w-26 md:max-w-36"
-            src={product.image?.[0] || assets.fallback_image}
+            src={product.image?.[0]
+              ? (product.image[0].startsWith('uploads/') || product.image[0].startsWith('/uploads/')
+                ? `http://localhost:4000/${product.image[0].replace(/^\/?/, '')}`
+                : `http://localhost:4000/uploads/${product.image[0].replace(/^\/?uploads[\\/]/, '')}`)
+              : assets.fallback_image}
             alt={product.name}
           />
         </div>
@@ -54,12 +58,7 @@ const ProductCard = ({ product }) => {
 
           <div className="flex items-end justify-between mt-3">
             <p className="md:text-xl text-base font-medium text-primary">
-              {currency}
-              {product.offerPrice}{" "}
-              <span className="text-gray-500/60 md:text-sm text-xs line-through">
-                {currency}
-                {product.price}
-              </span>
+              {currency}{product.offerPrice && Number(product.offerPrice) < Number(product.price) ? product.offerPrice : product.price}
             </p>
 
             <div

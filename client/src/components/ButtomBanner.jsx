@@ -11,7 +11,7 @@ const BottomBanner = () => {
       {/* Overlay Content */}
       <div className="absolute inset-0 flex flex-col items-center md:items-end md:justify-center pt-16 md:pt-0 md:pr-24">
         <div>
-          <h1 className="text-2xl md:text-3xl font-semibold text-primary mb-6">
+          <h1 className="text-2xl md:text-3xl font-semibold text-primary mb-6 drop-shadow-lg">
             Why We Are The Best?
           </h1>
 
@@ -19,8 +19,8 @@ const BottomBanner = () => {
             <div key={feature.title} className="flex items-center gap-4 mt-2">
               <img src={feature.icon} alt={feature.title} className="w-9 md:w-11" />
               <div>
-                <h3 className="text-lg md:text-xl font-semibold">{feature.title}</h3>
-                <p className="text-gray-500/70 text-xs md:text-sm">{feature.description}</p>
+                <h3 className="text-lg md:text-xl font-semibold text-white dark:text-white drop-shadow-md">{feature.title}</h3>
+                <p className="text-gray-100/90 dark:text-gray-200/90 text-xs md:text-sm drop-shadow-md">{feature.description}</p>
               </div>
             </div>
           ))}

@@ -8,7 +8,7 @@ const SellerLogin = () => {
 
   const onSubmitHandler = async (event) => {
     event.preventDefault();
-    // TEMP login logic - replace with API call later
+    
     if (email && password) {
       setIsSeller(true);
     }

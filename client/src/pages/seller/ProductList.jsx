@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAppContext } from '../../Context/AppContext';
+import { useAppContext } from '../../context/AppContext.jsx';
 
 const ProductList = () => {
   const { products, currency } = useAppContext();
@@ -40,10 +40,12 @@ const ProductList = () => {
                       <div className="border border-gray-300 rounded p-2">
                         <img
                             src={
-                           imageArray[0]
-                          ? `http://localhost:4000${imageArray[0]}` // full URL to backend
-                        : '/placeholder.jpg'
-                         }
+                              imageArray[0]
+                                ? (imageArray[0].startsWith('uploads/') || imageArray[0].startsWith('/uploads/')
+                                  ? `http://localhost:4000/${imageArray[0].replace(/^\/?/, '')}`
+                                  : `http://localhost:4000/uploads/${imageArray[0].replace(/^\/?uploads[\\/]/, '')}`)
+                                : '/placeholder.jpg'
+                            }
                          alt={product.name}
                          className="w-16 h-16 object-cover"
                     />

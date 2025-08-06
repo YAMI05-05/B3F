@@ -4,10 +4,14 @@ import axios from 'axios';
 
 const MyOrders = () => {
   const [myOrders, setMyOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const { currency, user } = useAppContext();
 
   const fetchMyOrders = async () => {
     if (!user) return;
+    setLoading(true);
+    setError(null);
     try {
       const token = localStorage.getItem('token');
       const res = await axios.get(
@@ -19,7 +23,11 @@ const MyOrders = () => {
       setMyOrders(res.data);
     } catch (err) {
       console.error('Failed to fetch orders:', err);
+      console.error('Error details:', err.response?.data);
+      setError(err.response?.data?.error || 'Failed to fetch orders');
       setMyOrders([]);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -30,11 +38,15 @@ const MyOrders = () => {
   return (
     <div className="mt-16 pb-16 px-4">
       <div className="flex flex-col items-end w-max mb-8">
-        <p className="text-2xl font-medium uppercase">My Orders</p>
+        <p className="text-2xl font-medium uppercase text-primary">My Orders</p>
         <div className="w-16 h-0.5 bg-primary rounded-full"></div>
       </div>
 
-      {myOrders.length === 0 ? (
+      {loading ? (
+        <p className="text-center text-gray-500">Loading orders...</p>
+      ) : error ? (
+        <p className="text-center text-red-500">Error: {error}</p>
+      ) : myOrders.length === 0 ? (
         <p className="text-center text-gray-500">No orders found.</p>
       ) : (
         myOrders.map((order, index) => (
@@ -43,11 +55,11 @@ const MyOrders = () => {
             className="border border-gray-300 rounded-lg mb-10 p-4 py-5 max-w-4xl"
           >
             <p className="flex justify-between flex-wrap md:items-center text-gray-400 md:font-medium gap-2">
-              <span>Order ID: {order._id || order.id}</span>
-              <span>Payment: {order.paymentType || 'COD'}</span>
+              <span>Order ID: {order.id}</span>
+              <span>Status: {order.status}</span>
               <span>
                 Total: {currency}
-                {order.amount?.toFixed(2) || '0.00'}
+                {order.total?.toFixed(2) || '0.00'}
               </span>
             </p>
 
@@ -61,7 +73,11 @@ const MyOrders = () => {
                 <div className="flex items-center">
                   <div className="bg-primary/10 p-4 rounded-lg">
                     <img
-                      src={item.product?.image?.[0] || '/fallback.jpg'}
+                      src={item.product?.image?.[0]
+                        ? (item.product.image[0].startsWith('uploads/') || item.product.image[0].startsWith('/uploads/')
+                          ? `http://localhost:4000/${item.product.image[0].replace(/^\/?/, '')}`
+                          : `http://localhost:4000/uploads/${item.product.image[0].replace(/^\/?uploads[\\/]/, '')}`)
+                        : '/fallback.jpg'}
                       alt={item.product?.name}
                       className="w-16 h-16 object-cover"
                     />
@@ -76,7 +92,6 @@ const MyOrders = () => {
 
                 <div className="flex flex-col justify-center md:ml-8">
                   <p>Quantity: {item.quantity || 1}</p>
-                  <p>Status: {order.status || 'Pending'}</p>
                   <p>
                     Date:{' '}
                     {order.createdAt
@@ -88,7 +103,9 @@ const MyOrders = () => {
                 <p className="text-primary text-lg font-semibold">
                   Amount: {currency}
                   {(
-                    (item.product?.offerPrice || 0) * (item.quantity || 1)
+                    (item.product?.offerPrice && Number(item.product.offerPrice) < Number(item.product.price)
+                      ? Number(item.product.offerPrice)
+                      : Number(item.product.price)) * (item.quantity || 1)
                   ).toFixed(2)}
                 </p>
               </div>

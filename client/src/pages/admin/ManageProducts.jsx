@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useAppContext } from '../../context/AppContext.jsx';
 
 const ManageProducts = () => {
   const [products, setProducts] = useState([]);
+  const { fetchProducts, currency } = useAppContext();
 
-  const fetchProducts = async () => {
+  // Rename fetchProducts to fetchProductsLocal for local state
+  const fetchProductsLocal = async () => {
     try {
       const res = await axios.get("http://localhost:4000/api/products");
       setProducts(res.data);
@@ -17,9 +20,13 @@ const ManageProducts = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:4000/api/products/${id}`);
+      const token = localStorage.getItem("token");
+      await axios.delete(`http://localhost:4000/api/products/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       toast.success("Product deleted");
-      fetchProducts(); // Refresh list
+      fetchProducts(); // Refresh global product list
+      fetchProductsLocal(); // Refresh local list
     } catch (err) {
       console.error("Error deleting product:", err);
       toast.error("Delete failed");
@@ -27,15 +34,15 @@ const ManageProducts = () => {
   };
 
   useEffect(() => {
-    fetchProducts();
+    fetchProductsLocal();
   }, []);
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">Manage Products</h1>
+      <h1 className="text-2xl font-bold mb-6 text-primary">Manage Products</h1>
       <div className="overflow-x-auto">
         <table className="w-full table-auto border-collapse bg-white shadow rounded">
-          <thead className="bg-gray-100 text-left">
+          <thead className="bg-primary/10 text-primary text-left">
             <tr>
               <th className="p-3">#</th>
               <th className="p-3">Name</th>
@@ -50,7 +57,7 @@ const ManageProducts = () => {
                 <td className="p-3">{i + 1}</td>
                 <td className="p-3">{product.name}</td>
                 <td className="p-3">{product.category}</td>
-                <td className="p-3">${product.price}</td>
+                                    <td className="p-3">{currency}{product.price}</td>
                 <td className="p-3">
                   <button
                     onClick={() => handleDelete(product.id)}

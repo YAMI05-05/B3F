@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useAppContext } from "../Context/AppContext";
+import { useAppContext } from "../context/AppContext.jsx";
 import { Link, useParams } from "react-router-dom";
 import { assets } from "../assets/assets";
 import ProductCard from "../components/ProductCard";
@@ -49,12 +49,18 @@ const ProductDetails = () => {
                 onClick={() => setThumbnail(img)}
                 className="border max-w-24 border-gray-500/30 rounded overflow-hidden cursor-pointer"
               >
-                <img src={img} alt={`Thumbnail ${index + 1}`} />
+                <img src={img.startsWith('uploads/') || img.startsWith('/uploads/')
+                  ? `http://localhost:4000/${img.replace(/^\/?/, '')}`
+                  : `http://localhost:4000/uploads/${img.replace(/^\/?uploads[\\/]/, '')}`
+                } alt={`Thumbnail ${index + 1}`} />
               </div>
             ))}
           </div>
           <div className="border border-gray-500/30 max-w-100 rounded overflow-hidden">
-            <img src={thumbnail} alt="Selected product" />
+            <img src={thumbnail && (thumbnail.startsWith('uploads/') || thumbnail.startsWith('/uploads/'))
+              ? `http://localhost:4000/${thumbnail.replace(/^\/?/, '')}`
+              : thumbnail ? `http://localhost:4000/uploads/${thumbnail.replace(/^\/?uploads[\\/]/, '')}` : assets.fallback_image
+            } alt="Selected product" />
           </div>
         </div>
 
@@ -74,11 +80,8 @@ const ProductDetails = () => {
           </div>
 
           <div className="mt-6">
-            <p className="text-gray-500/70 line-through">
-              MRP: {currency} {product.price}
-            </p>
             <p className="text-2xl font-medium">
-              MRP: {currency} {product.offerPrice}
+              {currency}{product.offerPrice && Number(product.offerPrice) < Number(product.price) ? product.offerPrice : product.price}
             </p>
             <span className="text-gray-500/70">(inclusive of all taxes)</span>
           </div>

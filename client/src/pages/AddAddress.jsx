@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { assets } from '../assets/assets';
 
 // Reusable input component
@@ -15,6 +16,7 @@ const InputField = ({ type, placeholder, name, handleChange, address }) => (
 );
 
 const AddAddress = () => {
+  const navigate = useNavigate();
   const [address, setAddress] = useState({
     firstName: '',
     lastName: '',
@@ -34,8 +36,31 @@ const AddAddress = () => {
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
-    // TODO: Submit address to backend or context
-    console.log("Address submitted:", address);
+    
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:4000/api/addresses', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(address)
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        alert('Address saved successfully!');
+        // Redirect back to cart
+        navigate('/cart');
+      } else {
+        alert(data.message || 'Failed to save address');
+      }
+    } catch (error) {
+      console.error('Error saving address:', error);
+      alert('Failed to save address. Please try again.');
+    }
   };
 
   return (

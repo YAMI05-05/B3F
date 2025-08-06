@@ -1,11 +1,13 @@
 import { Outlet, NavLink, useNavigate } from "react-router-dom";
-import { useAppContext } from "../../Context/AppContext";
+import { useAppContext } from "../../context/AppContext.jsx";
 
 const AdminLayout = () => {
   const navigate = useNavigate();
   const { setUser } = useAppContext();
 
   const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
     setUser(null);
     navigate("/");
   };
@@ -51,7 +53,7 @@ const AdminLayout = () => {
         </button>
       </aside>
 
-      <main className="flex-1 p-6 bg-gray-100 overflow-y-auto">
+      <main className="flex-1 p-6 bg-gray-100 dark:bg-gray-900 overflow-y-auto">
         <Outlet />
       </main>
     </div>

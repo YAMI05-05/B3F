@@ -36,6 +36,10 @@ import maggi_image from "./maggi_image.png";
 import dairy_product_image from "./dairy_product_image.png";
 import bakery_image from "./bakery_image.png";
 import grain_image from "./grain_image.png";
+import Animal_husbandary from "./Animal_husbandary.webp";
+import Vegitable_seeds from "./Vegitable_seeds.webp";
+import Equipments from "./Equipments.webp";
+import Chemical_fertilizer from "./Chemical_fertilizer.webp";
 
 // Exported asset group
 export const assets = {
@@ -72,46 +76,46 @@ export const assets = {
 // Product Categories
 export const categories = [
   {
-    text: "Organic veggies",
-    path: "Vegetables",
-    image: organic_vegitable_image,
-    bgColor: "#FEF6DA",
-  },
-  {
-    text: "Fresh Fruits",
-    path: "Fruits",
-    image: fresh_fruits_image,
+    text: "Animal Husbandry",
+    path: "AnimalHusbandry",
+    image: Animal_husbandary,
     bgColor: "#FEE0E0",
   },
   {
-    text: "Cold Drinks",
-    path: "Drinks",
-    image: bottles_image,
-    bgColor: "#F0F5DE",
+    text: "Vegetables Seeds",
+    path: "VegetablesSeeds",
+    image: Vegitable_seeds,
+    bgColor: "#FEF6DA",
   },
   {
-    text: "Instant Food",
-    path: "Instant",
-    image: maggi_image,
+    text: "Equipments",
+    path: "Equipments",
+    image: Equipments,
     bgColor: "#E1F5EC",
   },
   {
-    text: "Dairy Products",
-    path: "Dairy",
-    image: dairy_product_image,
-    bgColor: "#FEE6CD",
-  },
-  {
-    text: "Bakery & Breads",
-    path: "Bakery",
-    image: bakery_image,
-    bgColor: "#E0F6FE",
+    text: "Chemical Fertilizer",
+    path: "ChemicalFertilizer",
+    image: Chemical_fertilizer,
+    bgColor: "#F1E3F9",
   },
   {
     text: "Grains & Cereals",
     path: "Grains",
     image: grain_image,
     bgColor: "#F1E3F9",
+  },
+  {
+    text: "Vegetables",
+    path: "Vegetables",
+    image: organic_vegitable_image, // or box_icon as fallback
+    bgColor: "#FEF6DA",
+  },
+  {
+    text: "Fresh Fruits",
+    path: "Fruits",
+    image: fresh_fruits_image, // or box_icon as fallback
+    bgColor: "#FEE0E0",
   },
 ];
 

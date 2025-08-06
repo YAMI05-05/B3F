@@ -23,7 +23,6 @@ const AddProduct = () => {
       formData.append('category', category);
       formData.append('price', price);
       formData.append('offerPrice', offerPrice);
-      formData.append('seller_id', 1); // Optional: Replace with actual seller ID from context
 
       // Append multiple images
       files.forEach((file) => {
@@ -72,7 +71,7 @@ const AddProduct = () => {
                     type="file"
                     id={`image${index}`}
                     hidden
-                    accept="image/*"
+                    accept="image/jpeg, image/png, image/jpg"
                     onChange={(e) => {
                       const updatedFiles = [...files];
                       updatedFiles[index] = e.target.files[0];
